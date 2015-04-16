@@ -20,6 +20,9 @@ var utils = {
 			}
 
 			var main = pkg.main;
+			if(typeof main === "undefined") {
+				return false;
+			}
 			if(typeof main === "string") {
 				return main;
 			}
