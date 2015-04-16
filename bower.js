@@ -12,6 +12,22 @@ var excludedDeps = {
 	"system-bower": true
 };
 
+var utils = {
+	pkg: {
+		main: function(pkg){
+			if(pkg.system && pkg.system.main) {
+				return pkg.system.main;
+			}
+
+			var main = pkg.main;
+			if(typeof main === "string") {
+				return main;
+			}
+			return main[0];
+		}
+	}
+};
+
 // Combines together dependencies and devDependencies (if bowerDev option is enabled)
 var getDeps = function(loader, bower){
 	var deps = {};
@@ -64,6 +80,11 @@ var setPaths = function(config, bowerPath, name, main) {
 
 	// Set the path to the `main` and the path to the wildcard.
 	if(this._bowerMainLoaded) {
+		// Add a .js if there is no extension
+		if(main.indexOf(".") === -1) {
+			main = main + ".js";
+		}
+
 		config.paths[name] = [bowerPath, name, main].join('/');
 		config.paths[name + "/*"] = mainDir + "/*.js";
 	}
@@ -130,10 +151,9 @@ exports.translate = function(load){
 	config.paths = config.paths || {};
 
 	// Set the paths to the wildcard and main modules.
-	var main = bower.main && ((typeof bower.main === "string")
-								? bower.main : bower.main[0]);
+
 	// Don't set any paths for the main bower.json
-	setPaths.call(loader, config, bowerPath, name, main);
+	setPaths.call(loader, config, bowerPath, name, utils.pkg.main(bower));
 	setMain.call(loader, bower);
 	loader._bowerMainLoaded = true;
 
