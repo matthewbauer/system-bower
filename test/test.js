@@ -36,6 +36,36 @@ asyncTest("system.main overrides main", function(){
 	}).then(start);
 });
 
+QUnit.module('system-bower plugin: bowerIgnore option', {
+	setup: function() {
+		this.oldBowerPath = System.bowerPath;
+		System.bowerPath = "test/bower_ignore/bower_components";
+	},
+	teardown: function() {
+		if(this.oldFetch) {
+			System.fetch = this.oldFetch;
+		}
+		System.bowerPath = this.oldBowerPath;
+	}
+});
+
+asyncTest("Ignores deps you tell it to ignore", function(){
+	var fetch = this.oldFetch = System.fetch;
+	System.fetch = function(load){
+		if(/ignoreme/.test(load.name)) {
+			throw new Error("Trying to load ignoreme");
+		}
+		return fetch.call(this, load);
+	};
+
+	System.import("test/bower_ignore/bower.json!bower").then(function(){
+		ok(true, "it worked");
+	}).then(start, function(err){
+		equal(err, null, "got an error");
+	});
+});
+
+
 // Only run these tests for StealJS (because it requires steal syntax)
 if(System.isSteal) {
 	asyncTest("Modules with their own config works", function(){
