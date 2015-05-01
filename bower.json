@@ -26,7 +26,7 @@
     "canjs": "bitovi/canjs#2.2.4",
     "jquery": "~2.1.1",
     "steal": "^0.8.0",
-    "system.js": "~0.10.1"
+    "system.js": "https://github.com/bitovi/systemjs/tarball/0.16.6-bitovi.5"
   },
   "resolutions": {
     "traceur": "0.0.58"

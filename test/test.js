@@ -45,6 +45,7 @@ QUnit.module('system-bower plugin: bowerIgnore option', {
 		if(this.oldFetch) {
 			System.fetch = this.oldFetch;
 		}
+
 		System.bowerPath = this.oldBowerPath;
 	}
 });
@@ -65,6 +66,30 @@ asyncTest("Ignores deps you tell it to ignore", function(){
 	});
 });
 
+asyncTest("Handles an undefined load.main", function() {
+	var loader = System.clone();
+	loader._bowerMainLoaded = true;
+
+	System.import("bower").then(function(bower) {
+		var load = {
+			source: "{\"name\":\"foo\"}"
+		};
+
+		try {
+			Promise.resolve(bower.translate.call(loader, load))
+			.then(function(config) {
+				ok(true, 'successfully reached with an undefined main');
+				ok(/\"foo\/\*\": \"bower_components\/foo\/\/\*\.js\"/.test(config), 'config paths are set properly');
+			});
+		}
+		catch(e) {
+			ok(false, 'undefined main is unhandled');
+		}
+		finally {
+			QUnit.start();
+		}
+	});
+});
 
 // Only run these tests for StealJS (because it requires steal syntax)
 if(System.isSteal) {
