@@ -159,8 +159,7 @@ exports.translate = function(load){
 			);
 		}
 	}
-	// Add in the loader so these will be buildable in parallel.
-	amdDeps.unshift("@loader");
+	amdDeps = ["@loader", "bower-extension"].concat(amdDeps)
 
 	// Creates the configuration object. If the library provides a `system`
 	// object on its bower, use that as the base, otherwise we'll create our own.
@@ -179,7 +178,8 @@ exports.translate = function(load){
 		amdDeps = amdDeps.concat(config.configDependencies);
 	}
 
-	return "define(" + JSON.stringify(amdDeps) + ", function(loader){\n" +
+	return "define(" + JSON.stringify(amdDeps) + ", function(loader, extension){\n" +
+		"extension.addExtension(loader);\n" +
 		"loader.config(" +JSON.stringify(config, null, " ") + ");" + "\n});";
 };
 
