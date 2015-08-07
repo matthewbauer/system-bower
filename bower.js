@@ -102,24 +102,6 @@ var setMain = function(bower) {
 };
 
 /**
- * @function fetch
- * @description Implement fetch so that we can warn the user in case of a 404.
- * @signature `fetch(load)`
- * @param {Object} load Load object
- * @return {Promise} a promise to resolve with the load's source
- */
-exports.fetch = function(load){
-	var loader = this;
-	return Promise.resolve(this.fetch(load)).then(null, function(msg){
-		if(/Not Found/.test(msg)) {
-			var packageName = /\/(.+?)\/bower\.json/.exec(load.name)[1];
-			console.log("Unable to load the bower.json for", packageName);
-		}
-		return "";
-	});
-};
-
-/**
  * @function translate
  * @description Convert the bower.json file into a System.config call.
  * @signature `translate(load)`
